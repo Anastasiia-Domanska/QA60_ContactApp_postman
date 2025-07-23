@@ -1,0 +1,412 @@
+{
+	"info": {
+		"_postman_id": "c7f08801-e77d-49f4-a51d-3895331fb9f7",
+		"name": "QA60_ContactApp",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
+		"_exporter_id": "46909797",
+		"_collection_link": "https://anastasiiad-1146009.postman.co/workspace/Anastasiia-D's-Workspace~0c610a2c-cdcd-49f7-8b9e-6ea0bf061e76/collection/46909797-c7f08801-e77d-49f4-a51d-3895331fb9f7?action=share&source=collection_link&creator=46909797"
+	},
+	"item": [
+		{
+			"name": "User",
+			"item": [
+				{
+					"name": "Positive",
+					"item": [
+						{
+							"name": "LoginRegisteredUserCA",
+							"event": [
+								{
+									"listen": "test",
+									"script": {
+										"exec": [
+											"pm.test(\"Status code is 200\", function () {\r",
+											"    pm.response.to.have.status(200);\r",
+											"});\r",
+											"\r",
+											"var jsonData = pm.response.json();\r",
+											"pm.environment.set(\"token\", jsonData.token);"
+										],
+										"type": "text/javascript",
+										"packages": {}
+									}
+								},
+								{
+									"listen": "prerequest",
+									"script": {
+										"exec": [
+											""
+										],
+										"type": "text/javascript",
+										"packages": {}
+									}
+								}
+							],
+							"request": {
+								"method": "POST",
+								"header": [
+									{
+										"key": "Content-Type",
+										"value": "application/json",
+										"type": "text"
+									}
+								],
+								"body": {
+									"mode": "raw",
+									"raw": "{\r\n  \"username\": \"anastasiia23@gmail.com\",\r\n  \"password\": \"Aa12345!\"\r\n}",
+									"options": {
+										"raw": {
+											"language": "json"
+										}
+									}
+								},
+								"url": {
+									"raw": "{{BaseURL}}/v1/user/login/usernamepassword",
+									"host": [
+										"{{BaseURL}}"
+									],
+									"path": [
+										"v1",
+										"user",
+										"login",
+										"usernamepassword"
+									]
+								}
+							},
+							"response": []
+						}
+					]
+				},
+				{
+					"name": "Negative",
+					"item": [
+						{
+							"name": "Login UserCA With Wrong Password",
+							"event": [
+								{
+									"listen": "test",
+									"script": {
+										"exec": [
+											"\r",
+											"pm.test(\"Status code is 401\", function () {\r",
+											"    pm.response.to.have.status(401);\r",
+											"});\r",
+											"\r",
+											"pm.test(\"Value message: Login or Password incorrect\", function () {\r",
+											"    var jsonData = pm.response.json();\r",
+											"    pm.expect(jsonData.message).to.eql(\"Login or Password incorrect\");\r",
+											"});\r",
+											"\r",
+											"pm.test(\"Value error: Unauthorized\", function () {\r",
+											"    var jsonData = pm.response.json();\r",
+											"    pm.expect(jsonData.error).to.eql(\"Unauthorized\");\r",
+											"});\r",
+											"\r",
+											"pm.test(\"Body matches string: Unauthorized\", function () {\r",
+											"    pm.expect(pm.response.text()).to.include(\"Unauthorized\");\r",
+											"});\r",
+											"\r",
+											"pm.test(\"Content-Type is present\", function () {\r",
+											"    pm.response.to.have.header(\"Content-Type\");\r",
+											"});\r",
+											"\r",
+											"pm.test(\"Unauthorized POST request\", function () {\r",
+											"    pm.expect(pm.response.code).to.be.oneOf([401]);\r",
+											"});\r",
+											"\r",
+											"pm.test(\"Status code name has string: Unauthorized\", function () {\r",
+											"    pm.response.to.have.status(\"Unauthorized\");\r",
+											"});"
+										],
+										"type": "text/javascript",
+										"packages": {}
+									}
+								},
+								{
+									"listen": "prerequest",
+									"script": {
+										"exec": [],
+										"type": "text/javascript"
+									}
+								}
+							],
+							"request": {
+								"method": "POST",
+								"header": [
+									{
+										"key": "Content-Type",
+										"value": "application/json",
+										"type": "text"
+									}
+								],
+								"body": {
+									"mode": "raw",
+									"raw": "{\r\n  \"username\": \"anastasiia23@gmail.com\",\r\n  \"password\": \"Aa12345\"\r\n}",
+									"options": {
+										"raw": {
+											"language": "json"
+										}
+									}
+								},
+								"url": {
+									"raw": "{{BaseURL}}/v1/user/login/usernamepassword",
+									"host": [
+										"{{BaseURL}}"
+									],
+									"path": [
+										"v1",
+										"user",
+										"login",
+										"usernamepassword"
+									]
+								}
+							},
+							"response": []
+						}
+					]
+				}
+			]
+		},
+		{
+			"name": "Contact",
+			"item": [
+				{
+					"name": "Posivite",
+					"item": [
+						{
+							"name": "Add contact",
+							"event": [
+								{
+									"listen": "test",
+									"script": {
+										"exec": [
+											"pm.test(\"Message starts with correct text and contains ID\", function () {\r",
+											"    var jsonData = pm.response.json();\r",
+											"    pm.expect(jsonData.message).to.include(\"Contact was added! ID: \");\r",
+											"    var id = jsonData.message.replace(\"Contact was added! ID: \", \"\").trim();\r",
+											"    pm.expect(id).to.not.be.empty;\r",
+											"    pm.expect(id).to.match(/^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/i);\r",
+											"});\r",
+											""
+										],
+										"type": "text/javascript",
+										"packages": {}
+									}
+								},
+								{
+									"listen": "prerequest",
+									"script": {
+										"exec": [
+											""
+										],
+										"type": "text/javascript",
+										"packages": {}
+									}
+								}
+							],
+							"request": {
+								"method": "POST",
+								"header": [
+									{
+										"key": "Content-Type",
+										"value": "application/json",
+										"type": "text"
+									},
+									{
+										"key": "Authorization",
+										"value": "{{token}}",
+										"type": "text"
+									}
+								],
+								"body": {
+									"mode": "raw",
+									"raw": "{\r\n  \"id\": \"{{$timestamp}}\",\r\n  \"name\": \"Sara4\",\r\n  \"lastName\": \"string\",\r\n  \"email\": \"sara4@gmail.com\",\r\n  \"phone\": \"7687026456\",\r\n  \"address\": \"string\",\r\n  \"description\": \"string\"\r\n}",
+									"options": {
+										"raw": {
+											"language": "json"
+										}
+									}
+								},
+								"url": {
+									"raw": "{{BaseURL}}/v1/contacts",
+									"host": [
+										"{{BaseURL}}"
+									],
+									"path": [
+										"v1",
+										"contacts"
+									],
+									"query": [
+										{
+											"key": "",
+											"value": null,
+											"disabled": true
+										}
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "Get users contacs",
+							"event": [
+								{
+									"listen": "test",
+									"script": {
+										"exec": [
+											"var responseJson = JSON.parse(responseBody);\r",
+											"var contact =[];\r",
+											"var list = (responseJson.contacts).length;\r",
+											"\r",
+											"for(var i = 0;i< list; i++){\r",
+											"    var counter = responseJson.contacts[i];\r",
+											"    info = counter.id;\r",
+											"    contact.push(info)\r",
+											"}\r",
+											"pm.environment.set(\"Contact\", contact[0]);\r",
+											"//contact = JSON.stringify(contact).substring(2, 5);\r",
+											"//pm.environment.set(\"Contact\",contact);\r",
+											"\r",
+											"console.log(\"Contact is \", contact)\r",
+											"\r",
+											"//const varContact = pm.variables.get('var_contact');"
+										],
+										"type": "text/javascript",
+										"packages": {}
+									}
+								},
+								{
+									"listen": "prerequest",
+									"script": {
+										"exec": [
+											""
+										],
+										"type": "text/javascript",
+										"packages": {}
+									}
+								}
+							],
+							"request": {
+								"method": "GET",
+								"header": [
+									{
+										"key": "Authorization",
+										"value": "{{token}}",
+										"type": "text"
+									}
+								],
+								"url": {
+									"raw": "{{BaseURL}}/v1/contacts",
+									"host": [
+										"{{BaseURL}}"
+									],
+									"path": [
+										"v1",
+										"contacts"
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "Delete contact by id",
+							"event": [
+								{
+									"listen": "test",
+									"script": {
+										"exec": [
+											"pm.test(\"Delete message is correct\", function () {\r",
+											"    var jsonData = pm.response.json();\r",
+											"    pm.expect(jsonData.message).to.eql(\"Contact was deleted!\");\r",
+											"});\r",
+											""
+										],
+										"type": "text/javascript",
+										"packages": {}
+									}
+								},
+								{
+									"listen": "prerequest",
+									"script": {
+										"exec": [
+											"pm.sendRequest({\r",
+											"    url: \"https://contactapp-telran-backend.herokuapp.com/v1/contacts\",\r",
+											"    method: \"GET\",\r",
+											"    header: {\r",
+											"        \"Authorization\": pm.environment.get(\"token\")\r",
+											"    }\r",
+											"}, function (err, response) {\r",
+											"    if (err) {\r",
+											"        console.error(\"Ошибка при получении контактов:\", err);\r",
+											"        return;\r",
+											"    }\r",
+											"\r",
+											"    var jsonData = response.json();\r",
+											"    if (jsonData.contacts && jsonData.contacts.length > 0) {\r",
+											"        var contactId = jsonData.contacts[0].id;\r",
+											"        pm.environment.set(\"Contact\", contactId);\r",
+											"        console.log(\"ID контакта сохранён:\", contactId);\r",
+											"    } else {\r",
+											"        console.warn(\"Контакты не найдены.\");\r",
+											"    }\r",
+											"});\r",
+											""
+										],
+										"type": "text/javascript",
+										"packages": {}
+									}
+								}
+							],
+							"request": {
+								"method": "DELETE",
+								"header": [
+									{
+										"key": "Authorization",
+										"value": "{{token}}",
+										"type": "text"
+									}
+								],
+								"url": {
+									"raw": "{{BaseURL}}/v1/contacts/{{Contact}}",
+									"host": [
+										"{{BaseURL}}"
+									],
+									"path": [
+										"v1",
+										"contacts",
+										"{{Contact}}"
+									]
+								}
+							},
+							"response": []
+						}
+					]
+				}
+			]
+		}
+	],
+	"event": [
+		{
+			"listen": "prerequest",
+			"script": {
+				"type": "text/javascript",
+				"packages": {},
+				"exec": [
+					""
+				]
+			}
+		},
+		{
+			"listen": "test",
+			"script": {
+				"type": "text/javascript",
+				"packages": {},
+				"exec": [
+					"pm.test(\"Response time is less than 1000ms\", function () {\r",
+					"    pm.expect(pm.response.responseTime).to.be.below(1000);\r",
+					"});"
+				]
+			}
+		}
+	]
+}
